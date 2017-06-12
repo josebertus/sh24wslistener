@@ -29,7 +29,6 @@ public class ProcesarServicios {
         //System.out.println("Consumimos los servicios");
         
 
-		Connection conexion = null;
 		String consulta;
 		Boolean resprod;
 		Clob esquema;
@@ -68,7 +67,8 @@ public class ProcesarServicios {
 			 * Use Connection to query the database for a simple table listing.
 			 * Statement will be closed automatically.
 			 */
-			try (Statement stm = conn.createStatement()) {
+			Statement stm = conn.createStatement();
+			try {
 				String query = "BEGIN pac_shws.PP_DEMONIO_PENDIENTES;END;";
 				Boolean rs = stm.execute(query);
 			} catch (SQLException e) {
@@ -76,9 +76,12 @@ public class ProcesarServicios {
 			} finally {
 				// Release connection back to the pool
 				if (conn != null) {
+					stm.close();
+					stm = null;
 					conn.close();
+					conn = null;
 				}
-				conn = null; // prevent any future access
+				
 			}			
 	        
 		}catch (Exception e)
